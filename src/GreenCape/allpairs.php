@@ -83,9 +83,9 @@ class AllPairs
 		try {
 			print("\nBegin pair-wise testset generation\n");
 
-			$currRow = 0;
 			$numberTests = 1;
 			$largest = array();
+			$labels = array();
 			$kk = 0; // $kk points into parameterValues
 			$numberParameters = count($parameterDefinition);
 			foreach ($parameterDefinition as $label => $strValues) {
@@ -101,7 +101,8 @@ class AllPairs
 					++$kk;
 				}
 
-				$legalValues[$currRow++] = $values;
+				$labels[] = $label;
+				$legalValues[] = $values;
 			}
 			rsort($largest);
 
@@ -283,17 +284,17 @@ class AllPairs
 				}
 			}
 
-			// Display results
-			print("\nResult testsets: \n");
+			$result = array();
 			for ($i = 0; $i < count($testSets); ++$i) {
-				printf("%3d: ", $i);
+				$set = array();
 				$curr = $testSets[$i];
 				for ($j = 0; $j < $numberParameters; ++$j) {
-					print($parameterValues[$curr[$j]] . " ");
+					$set[$labels[$j]] = $parameterValues[$curr[$j]];
 				}
-				print("\n");
+				$result[] = $set;
 			}
-			print("\nEnd\n");
+
+			return $result;
 
 		} catch (Exception $ex) {
 			print("Fatal: " . $ex->getMessage());
@@ -320,4 +321,13 @@ class AllPairs
 $file = '../../tests/data/prime.txt';
 
 $app = new AllPairs();
-$app->execute(getParameterDefinitionsFromFile($file));
+$result = $app->execute(getParameterDefinitionsFromFile($file));
+
+// Display results
+print("\nResult testsets: \n");
+foreach ($result as $i => $set) {
+	printf("%3d: ", $i);
+	print(implode(', ', $set));
+	print("\n");
+}
+print("\nEnd\n");
