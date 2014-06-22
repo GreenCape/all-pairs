@@ -22,7 +22,9 @@ class Array2D
 }
 
 /** @var  string  $file */
-$file = '../../original/testData.txt';
+// $file = '../../original/testData.txt';
+// $file = '../../tests/data/server.txt';
+$file = '../../tests/data/prime.txt';
 
 /** @var  int  $numberParameters */
 $numberParameters = 0;
@@ -65,15 +67,22 @@ try {
 	// print("\nInput file = " . $file . "\n");
 
 	// Do a preliminary file read to determine number of parameters and number of parameter values
+	$numberTests = 1;
+	$largest = array();
 	foreach (file($file) as $line) {
 		++$numberParameters;
 		$lineTokens = explode(':', $line);
 		$strValues = explode(',', $lineTokens[1]);
-		$numberParameterValues += count($strValues);
+		$count = count($strValues);
+		$numberParameterValues += $count;
+		$numberTests *= $count;
+		$largest[] = $count;
 	}
+	rsort($largest);
 
-	print("There are " . $numberParameters . " parameters\n");
-	print("There are " . $numberParameterValues . " parameter values\n");
+	print("There are " . $numberParameters . " parameters with " . $numberParameterValues . " parameter values.\n");
+	print("There are " . $numberTests . " possible combinations.\n");
+	print("The optimum (least possible) number of combinations covering all pairs is " . $largest[0] * $largest[1] . ".\n");
 
 	// Now do a second file read to create the legalValues array, and the parameterValues array
 	$currRow = 0;
@@ -95,16 +104,16 @@ try {
 		$legalValues[$currRow++] = $values;
 	}
 
-	print("\nParameter values:\n");
-	print_r(implode(' ', $parameterValues));
-	print("\n");
+	// print("\nParameter values:\n");
+	// print_r(implode(' ', $parameterValues));
+	// print("\n");
 
-	print("\nLegal values internal representation:\n");
-	for ($i = 0; $i < count($legalValues); ++$i) {
-		print("Parameter" . $i . ": ");
-		print_r(implode(' ', $legalValues[$i]));
-		print("\n");
-	}
+	// print("\nLegal values internal representation:\n");
+	// for ($i = 0; $i < count($legalValues); ++$i) {
+	// 	print("Parameter" . $i . ": ");
+	// 	print_r(implode(' ', $legalValues[$i]));
+	// 	print("\n");
+	// }
 
 	// Determine the number of pairs for this input set
 	for ($i = 0; $i <= count($legalValues) - 2; ++$i) {
