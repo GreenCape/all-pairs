@@ -66,9 +66,10 @@ try {
 	print("\nBegin pair-wise testset generation\n");
 	// print("\nInput file = " . $file . "\n");
 
-	// Do a preliminary file read to determine number of parameters and number of parameter values
+	$currRow = 0;
 	$numberTests = 1;
 	$largest = array();
+	$kk = 0; // $kk points into parameterValues
 	foreach (file($file) as $line) {
 		++$numberParameters;
 		$lineTokens = explode(':', $line);
@@ -77,23 +78,8 @@ try {
 		$numberParameterValues += $count;
 		$numberTests *= $count;
 		$largest[] = $count;
-	}
-	rsort($largest);
 
-	print("There are " . $numberParameters . " parameters with " . $numberParameterValues . " parameter values.\n");
-	print("There are " . $numberTests . " possible combinations.\n");
-	print("The optimum (least possible) number of combinations covering all pairs is " . $largest[0] * $largest[1] . ".\n");
-
-	// Now do a second file read to create the legalValues array, and the parameterValues array
-	$currRow = 0;
-
-	// $kk points into parameterValues
-	$kk = 0;
-	foreach (file($file) as $line) {
-		$lineTokens = explode(':', $line);
-		$strValues = explode(',', $lineTokens[1]);
 		$values = array();
-
 		for ($i = 0; $i < count($strValues); ++$i) {
 			$strValues[$i] = trim($strValues[$i]);
 			$values[$i] = $kk;
@@ -103,6 +89,11 @@ try {
 
 		$legalValues[$currRow++] = $values;
 	}
+	rsort($largest);
+
+	print("There are " . $numberParameters . " parameters with " . $numberParameterValues . " parameter values.\n");
+	print("There are " . $numberTests . " possible combinations.\n");
+	print("The optimum (least possible) number of combinations covering all pairs is " . $largest[0] * $largest[1] . ".\n");
 
 	// print("\nParameter values:\n");
 	// print_r(implode(' ', $parameterValues));
