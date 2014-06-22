@@ -119,28 +119,20 @@ class AllPairs
 			print("\nThere are " . $numberPairs . " pairs\n");
 
 			// Process the legalValues array to populate the allPairsDisplay & unusedPairs & unusedPairsSearch collections
-			$currPair = 0;
 			for ($i = 0; $i <= count($legalValues) - 2; ++$i) {
 				for ($j = $i + 1; $j <= count($legalValues) - 1; ++$j) {
 					$firstRow = $legalValues[$i];
 					$secondRow = $legalValues[$j];
 					for ($x = 0; $x < count($firstRow); ++$x) {
 						for ($y = 0; $y < count($secondRow); ++$y) {
-							// Pair first value
-							$allPairsDisplay[$currPair][0] = $firstRow[$x];
-
-							// Pair second value
-							$allPairsDisplay[$currPair][1] = $secondRow[$y];
-
 							$aPair = array(
 								$firstRow[$x],
 								$secondRow[$y]
 							);
 							$unusedPairs[] = $aPair;
+							$allPairsDisplay[] = $aPair;
 
 							$unusedPairsSearch->set($firstRow[$x], $secondRow[$y], 1);
-
-							++$currPair;
 						}
 					}
 				}
