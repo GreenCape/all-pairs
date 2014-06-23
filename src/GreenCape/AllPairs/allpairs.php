@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/../../../src/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
+
 class Array2D
 {
 	private $data = array();
@@ -13,42 +16,15 @@ class Array2D
 	{
 		if (!isset($this->data[min($i, $j)]))
 		{
-			throw new OutOfBoundsException();
+			throw new \OutOfBoundsException();
 		}
 		if (!isset($this->data[min($i, $j)][max($i, $j)]))
 		{
-			throw new OutOfBoundsException();
+			throw new \OutOfBoundsException();
 		}
 
 		return $this->data[min($i, $j)][max($i, $j)];
 	}
-}
-
-/**
- * @param $file
- *
- * @return array
- */
-function getParameterDefinitionsFromFile($file)
-{
-	$parameterDefinition = array();
-	foreach (file($file) as $line)
-	{
-		$line = trim($line);
-		if (empty($line) || $line[0] == '#')
-		{
-			continue;
-		}
-		$lineTokens = explode(':', $line);
-		$strValues  = explode(',', $lineTokens[1]);
-		for ($i = 0; $i < count($strValues); ++$i)
-		{
-			$strValues[$i] = trim($strValues[$i]);
-		}
-		$parameterDefinition[trim($lineTokens[0])] = $strValues;
-	}
-
-	return $parameterDefinition;
 }
 
 class AllPairs
@@ -83,12 +59,20 @@ class AllPairs
 	/** @var  array  The main result data structure */
 	private $testSets = array();
 
-	public function execute($parameterDefinition)
+	/** @var \GreenCape\AllPairs\Reader */
+	private $reader = null;
+
+	public function __construct(GreenCape\AllPairs\Reader $reader)
+	{
+		$this->reader = $reader;
+	}
+
+	public function execute()
 	{
 		/** @var  int $poolSize Number of candidate testSet arrays to generate before picking one to add to testSets list */
 		$poolSize = 20;
 
-		$this->tokenizeParameterDefinition($parameterDefinition);
+		$this->tokenizeParameterDefinition($this->reader->getParameters());
 		$this->createPairs();
 
 		while (count($this->unusedPairs) > 0)
@@ -383,15 +367,15 @@ class AllPairs
 }
 
 /** @var  string $file */
-// $file = '../../original/testData.txt';
-// $file = '../../tests/data/server.txt';
-$file = '../../tests/data/prime.txt';
-// $file = '../../tests/data/big.txt';
+// $file = '../../../original/testData.txt';
+// $file = '../../../tests/data/server.txt';
+$file = '../../../tests/data/prime.txt';
+// $file = '../../../tests/data/big.txt';
 
 print("\nBegin pair-wise testset generation\n");
 
-$app    = new AllPairs();
-$result = $app->execute(getParameterDefinitionsFromFile($file));
+$app    = new AllPairs(new GreenCape\AllPairs\FileReader($file));
+$result = $app->execute();
 
 // Display results
 print("\nResult testsets: \n");

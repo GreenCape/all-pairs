@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Celtic Database" default="build" basedir=".">
+    <target name="build"/>
+
+    <target name="phpab" description="Generate autoload script">
+        <exec command="phpab --basedir . --output autoload.php ." dir="src" passthru="true"/>
+        <exec command="phpab --basedir . --output autoload.php ." dir="vendor" passthru="true"/>
+    </target>
+</project>
