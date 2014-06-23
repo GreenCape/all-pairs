@@ -62,9 +62,13 @@ class AllPairs
 	/** @var \GreenCape\AllPairs\Reader */
 	private $reader = null;
 
-	public function __construct(GreenCape\AllPairs\Reader $reader)
+	/** @var \GreenCape\AllPairs\Writer  */
+	private $writer = null;
+
+	public function __construct(GreenCape\AllPairs\Reader $reader, GreenCape\AllPairs\Writer $writer)
 	{
 		$this->reader = $reader;
+		$this->writer = $writer;
 	}
 
 	public function execute()
@@ -80,7 +84,7 @@ class AllPairs
 			$this->testSets[]  = $this->chooseBestTestSet($this->generateCandidates($poolSize));
 		}
 
-		return $this->formatReturnValue($this->testSets);
+		return $this->writer->write($this->formatReturnValue($this->testSets));
 	}
 
 	private function countPairsCaptured($ts, Array2D $unusedPairsSearch) // number of unused pairs captured by testSet ts
@@ -372,18 +376,10 @@ class AllPairs
 $file = '../../../tests/data/prime.txt';
 // $file = '../../../tests/data/big.txt';
 
-print("\nBegin pair-wise testset generation\n");
+print("\nBegin pair-wise test set generation\n\n");
 
-$app    = new AllPairs(new GreenCape\AllPairs\FileReader($file));
+$app    = new AllPairs(new GreenCape\AllPairs\FileReader($file), new GreenCape\AllPairs\ConsoleWriter());
 $result = $app->execute();
 
 // Display results
-print("\nResult testsets: \n");
-print("     " . implode(', ', array_keys($result[0])) . "\n");
-foreach ($result as $i => $set)
-{
-	printf("%3d: ", $i);
-	print(implode(', ', $set));
-	print("\n");
-}
-print("\nEnd\n");
+print("\nGenerated " . count($result) . " test sets.\n");
