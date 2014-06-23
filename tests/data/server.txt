@@ -1,4 +1,8 @@
+#
+# Web Server Configurations
+#
+
 Operating System: Windows, Linux
-Web Server: Apache, Nginx, Microsoft-IIS, LiteSpeed, Lighttpd
-DBMS: MySQL, MariaDB, Microsoft SQL Server, PostgreSQL
-PHP Version: PHP 5.2, PHP 5.3, PHP 5.4, PHP 5.5, PHP 5.6
+Web Server:       Apache, Nginx, Microsoft-IIS, LiteSpeed, Lighttpd
+DBMS:             MySQL, MariaDB, Microsoft SQL Server, PostgreSQL
+PHP Version:      PHP 5.2, PHP 5.3, PHP 5.4, PHP 5.5, PHP 5.6
