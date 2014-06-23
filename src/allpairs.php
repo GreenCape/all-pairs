@@ -27,30 +27,6 @@ class Array2D
 	}
 }
 
-class AllPairs
-{
-	/** @var \GreenCape\AllPairs\Reader */
-	private $reader;
-
-	/** @var \GreenCape\AllPairs\Writer */
-	private $writer;
-
-	/** @var \GreenCape\AllPairs\Strategy */
-	private $strategy;
-
-	public function __construct(GreenCape\AllPairs\Strategy $strategy, GreenCape\AllPairs\Reader $reader, GreenCape\AllPairs\Writer $writer)
-	{
-		$this->strategy = $strategy;
-		$this->reader   = $reader;
-		$this->writer   = $writer;
-	}
-
-	public function execute()
-	{
-		return $this->writer->write($this->strategy->combine($this->reader->getParameters()));
-	}
-}
-
 $base = '..';
 /** @var  string $file */
 // $file = $base . '/original/testData.txt';
@@ -60,12 +36,12 @@ $file = $base . '/tests/data/server.txt';
 
 print("\nBegin pair-wise test set generation\n\n");
 
-$app    = new AllPairs(
+$allPairs    = new GreenCape\AllPairs\Combinator(
 	new GreenCape\AllPairs\QictStrategy(),
 	new GreenCape\AllPairs\FileReader($file),
 	new GreenCape\AllPairs\ConsoleWriter()
 );
-$result = $app->execute();
+$result = $allPairs->combine();
 
 // Display results
 print("\nGenerated " . count($result) . " test sets.\n");
