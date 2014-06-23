@@ -34,13 +34,18 @@ function getParameterDefinitionsFromFile($file)
 	$parameterDefinition = array();
 	foreach (file($file) as $line)
 	{
+		$line = trim($line);
+		if (empty($line) || $line[0] == '#')
+		{
+			continue;
+		}
 		$lineTokens = explode(':', $line);
 		$strValues  = explode(',', $lineTokens[1]);
 		for ($i = 0; $i < count($strValues); ++$i)
 		{
 			$strValues[$i] = trim($strValues[$i]);
 		}
-		$parameterDefinition[$lineTokens[0]] = $strValues;
+		$parameterDefinition[trim($lineTokens[0])] = $strValues;
 	}
 
 	return $parameterDefinition;
@@ -91,7 +96,7 @@ class AllPairs
 			$this->testSets[]  = $this->chooseBestTestSet($this->generateCandidates($poolSize));
 		}
 
-		return $this->formatReturnValue();
+		return $this->formatReturnValue($this->testSets);
 	}
 
 	private function countPairsCaptured($ts, Array2D $unusedPairsSearch) // number of unused pairs captured by testSet ts
@@ -296,17 +301,17 @@ class AllPairs
 	/**
 	 * @return array
 	 */
-	private function formatReturnValue()
+	private function formatReturnValue($testSets)
 	{
 		$result = array();
-		foreach ($this->testSets as $curr)
+		foreach ($testSets as $set)
 		{
-			$set = array();
+			$parameters = array();
 			for ($j = 0; $j < $this->numberParameters; ++$j)
 			{
-				$set[$this->parameterLabels[$j]] = $this->parameterValues[$curr[$j]];
+				$parameters[$this->parameterLabels[$j]] = $this->parameterValues[$set[$j]];
 			}
-			$result[] = $set;
+			$result[] = $parameters;
 		}
 
 		return $result;
@@ -380,8 +385,8 @@ class AllPairs
 /** @var  string $file */
 // $file = '../../original/testData.txt';
 // $file = '../../tests/data/server.txt';
-// $file = '../../tests/data/prime.txt';
-$file = '../../tests/data/big.txt';
+$file = '../../tests/data/prime.txt';
+// $file = '../../tests/data/big.txt';
 
 print("\nBegin pair-wise testset generation\n");
 
