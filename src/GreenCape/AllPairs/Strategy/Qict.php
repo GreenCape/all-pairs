@@ -8,7 +8,7 @@ class QictStrategy implements Strategy
 	private $numberParameters;
 
 	/** @var  string[]  One-dimensional array of all parameters */
-	private $parameterLabels;
+	private $parameterLabels = array();
 
 	/** @var  string[]  One-dimensional array of all parameter values */
 	private $parameterValues = array();
@@ -32,7 +32,7 @@ class QictStrategy implements Strategy
 	private $unusedCounts = array();
 
 	/**
-	 * @param $parameterDefinition
+	 * @param   Parameter[] $parameterDefinition
 	 *
 	 * @return array
 	 */
@@ -53,23 +53,22 @@ class QictStrategy implements Strategy
 	}
 
 	/**
-	 * @param $parameterDefinition
+	 * @param Parameter[] $parameterDefinition
 	 */
 	private function tokenizeParameterDefinition($parameterDefinition)
 	{
-		$this->parameterLabels  = array_keys($parameterDefinition);
 		$this->numberParameters = count($parameterDefinition);
 
 		/** @var  int $kk Points into parameterValues */
 		$kk = 0;
-
-		foreach (array_values($parameterDefinition) as $position => $strValues)
+		foreach ($parameterDefinition as $position => $parameter)
 		{
+			$this->parameterLabels[$position] = $parameter->getLabel();
 			$values = array();
-			for ($i = 0; $i < count($strValues); ++$i)
+			for ($i = 0; $i < count($parameter); ++$i)
 			{
 				$values[$i]                    = $kk;
-				$this->parameterValues[$kk]    = $strValues[$i];
+				$this->parameterValues[$kk]    = $parameter[$i];
 				$this->parameterPositions[$kk] = $position;
 				++$kk;
 			}

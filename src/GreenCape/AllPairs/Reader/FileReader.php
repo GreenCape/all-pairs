@@ -11,7 +11,13 @@ class FileReader implements Reader
 		$this->file = $file;
 	}
 
-	public function getParameters()
+	/**
+	 * @param string $labelDelimiter
+	 * @param string $valueDelimiter
+	 *
+	 * @return Parameter[]
+	 */
+	public function getParameters($labelDelimiter = ':', $valueDelimiter = ',')
 	{
 		$parameterDefinition = array();
 		foreach (file($this->file) as $line)
@@ -21,13 +27,13 @@ class FileReader implements Reader
 			{
 				continue;
 			}
-			$lineTokens = explode(':', $line);
-			$strValues  = explode(',', $lineTokens[1]);
-			for ($i = 0; $i < count($strValues); ++$i)
+			$lineTokens = explode($labelDelimiter, $line, 2);
+			$values  = explode($valueDelimiter, $lineTokens[1]);
+			for ($i = 0; $i < count($values); ++$i)
 			{
-				$strValues[$i] = trim($strValues[$i]);
+				$values[$i] = trim($values[$i]);
 			}
-			$parameterDefinition[trim($lineTokens[0])] = $strValues;
+			$parameterDefinition[] = new Parameter($values, trim($lineTokens[0]));
 		}
 
 		return $parameterDefinition;
