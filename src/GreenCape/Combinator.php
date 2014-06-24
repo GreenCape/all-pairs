@@ -22,11 +22,7 @@ class Combinator
 
 	public function combine()
 	{
-		$testSets = $this->strategy
-			->combine(
-				$this->reader
-					->getParameters()
-			);
+		$testSets = $this->strategy->combine($this->reader);
 
 		return is_null($this->writer) ? $testSets : $this->writer->write($testSets);
 	}

@@ -32,13 +32,13 @@ class QictStrategy implements Strategy
 	private $unusedCounts = array();
 
 	/**
-	 * @param   Parameter[] $parameterDefinition
+	 * @param   Reader $parameterDefinition
 	 *
 	 * @return array
 	 */
-	public function combine($parameterDefinition)
+	public function combine(Reader $parameterDefinition)
 	{
-		$this->tokenizeParameterDefinition($parameterDefinition);
+		$this->importParameters($parameterDefinition->getParameters());
 		$this->createPairs();
 
 		/** @var  int $poolSize Number of candidate testSet arrays to generate before picking one to add to testSets list */
@@ -55,7 +55,7 @@ class QictStrategy implements Strategy
 	/**
 	 * @param Parameter[] $parameterDefinition
 	 */
-	private function tokenizeParameterDefinition($parameterDefinition)
+	private function importParameters($parameterDefinition)
 	{
 		$this->numberParameters = count($parameterDefinition);
 
