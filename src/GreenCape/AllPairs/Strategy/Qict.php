@@ -117,7 +117,7 @@ class QictStrategy implements Strategy
 		foreach ($candidateSets as $set)
 		{
 			$pairsCaptured = $this->countPairsCaptured($set, $this->unusedPairsSearch);
-			if ($pairsCaptured > $mostPairsCaptured)
+			if ($pairsCaptured >= $mostPairsCaptured)
 			{
 				$mostPairsCaptured = $pairsCaptured;
 				$bestTestSet = $set;
@@ -183,18 +183,19 @@ class QictStrategy implements Strategy
 	/**
 	 * Perform all updates
 	 *
-	 * @param $bestTestSet
+	 * @param $testSet
 	 *
 	 * @return void
 	 */
-	private function updateState($bestTestSet)
+	private function updateState($testSet)
 	{
-		for ($i = 0; $i < $this->numberParameters - 1; ++$i)
+		$length = count($testSet);
+		for ($i = 0; $i < $length - 1; ++$i)
 		{
-			for ($j = $i + 1; $j < $this->numberParameters; ++$j)
+			for ($j = $i + 1; $j < $length; ++$j)
 			{
-				$v1 = $bestTestSet[$i]; // value 1 of newly added pair
-				$v2 = $bestTestSet[$j]; // value 2 of newly added pair
+				$v1 = $testSet[$i]; // value 1 of newly added pair
+				$v2 = $testSet[$j]; // value 2 of newly added pair
 
 				--$this->unusedCounts[$v1];
 				--$this->unusedCounts[$v2];
