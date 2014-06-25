@@ -41,11 +41,11 @@ class FileReader implements Reader
 
 	public function getSubModules()
 	{
-		throw new \RuntimeException('Not implemented');
+		return null;
 	}
 
 	public function getConstraints()
 	{
-		throw new \RuntimeException('Not implemented');
+		return null;
 	}
 }

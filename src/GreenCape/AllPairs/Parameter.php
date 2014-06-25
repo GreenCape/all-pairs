@@ -2,11 +2,13 @@
 
 namespace GreenCape\AllPairs;
 
-class Parameter implements \ArrayAccess, \Countable
+class Parameter implements \ArrayAccess, \Countable, \Iterator
 {
 	private $label;
 
 	private $values;
+
+	private $current = 0;
 
 	public function __construct(array $values, $label = null)
 	{
@@ -21,6 +23,11 @@ class Parameter implements \ArrayAccess, \Countable
 	public function getLabel()
 	{
 		return $this->label;
+	}
+
+	public function getValues()
+	{
+		return $this->values;
 	}
 
 	/*
@@ -88,5 +95,60 @@ class Parameter implements \ArrayAccess, \Countable
 	public function count()
 	{
 		return count($this->values);
+	}
+
+	/*
+	 * Iterator Interface
+	 */
+
+	/**
+	 * Return the current element
+	 *
+	 * @return mixed Can return any type.
+	 */
+	public function current()
+	{
+		return $this->values[$this->current];
+	}
+
+	/**
+	 * Move forward to next element
+	 *
+	 * @return void
+	 */
+	public function next()
+	{
+		$this->current++;
+	}
+
+	/**
+	 * Return the key of the current element
+	 *
+	 * @return int
+	 */
+	public function key()
+	{
+		return $this->current;
+	}
+
+	/**
+	 * Checks if current position is valid
+	 *
+	 * @return boolean The return value will be casted to boolean and then evaluated.
+	 *                 Returns true on success or false on failure.
+	 */
+	public function valid()
+	{
+		return isset($this->values[$this->current]);
+	}
+
+	/**
+	 * Rewind the Iterator to the first element
+	 *
+	 * @return void
+	 */
+	public function rewind()
+	{
+		$this->current = 0;
 	}
 }

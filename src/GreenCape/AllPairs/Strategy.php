@@ -5,9 +5,9 @@ namespace GreenCape\AllPairs;
 interface Strategy
 {
 	/**
-	 * @param Reader $parameterDefinition
+	 * @param Reader $reader
 	 *
 	 * @return array
 	 */
-	public function combine(Reader $parameterDefinition);
+	public function combine(Reader $reader);
 }

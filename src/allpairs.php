@@ -5,8 +5,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $base = '..';
 $files = array(
-	'/original/testData.txt',
 	'/tests/data/server.txt',
+	'/original/testData.txt',
 	'/tests/data/prime.txt',
 	'/tests/data/big.txt',
 );
@@ -16,7 +16,7 @@ foreach ($files as $file)
 	print("\nBegin pair-wise test set generation for {$file}\n\n");
 	$time = microtime(true);
 	$allPairs = new GreenCape\AllPairs\Combinator(
-		new GreenCape\AllPairs\QictStrategy(),
+		new GreenCape\AllPairs\DefaultStrategy(),
 		new GreenCape\AllPairs\FileReader($base . $file),
 		new GreenCape\AllPairs\ConsoleWriter()
 	);
@@ -25,4 +25,5 @@ foreach ($files as $file)
 
 	// Display results
 	print("\nGenerated " . count($result) . " test sets in {$time} seconds.\n");
+	unset($allPairs, $result, $time);
 }

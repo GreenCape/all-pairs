@@ -10,9 +10,9 @@ class ConsoleWriter implements  Writer
 	public function write($result)
 	{
 		print(implode($this->fieldSeparator, array_keys($result[0])) . $this->lineSeparator);
-		foreach ($result as $set)
+		foreach ((array) $result as $set)
 		{
-			print(implode($this->fieldSeparator, $set) . $this->lineSeparator);
+			print(implode($this->fieldSeparator, (array) $set) . $this->lineSeparator);
 		}
 
 		return $result;
