@@ -4,20 +4,25 @@ require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $base = '..';
-/** @var  string $file */
-// $file = $base . '/original/testData.txt';
-$file = $base . '/tests/data/server.txt';
-// $file = $base . '/tests/data/prime.txt';
-// $file = $base . '/tests/data/big.txt';
-
-print("\nBegin pair-wise test set generation\n\n");
-
-$allPairs    = new GreenCape\AllPairs\Combinator(
-	new GreenCape\AllPairs\QictStrategy(),
-	new GreenCape\AllPairs\FileReader($file),
-	new GreenCape\AllPairs\ConsoleWriter()
+$files = array(
+	'/original/testData.txt',
+	'/tests/data/server.txt',
+	'/tests/data/prime.txt',
+	'/tests/data/big.txt',
 );
-$result = $allPairs->combine();
 
-// Display results
-print("\nGenerated " . count($result) . " test sets.\n");
+foreach ($files as $file)
+{
+	print("\nBegin pair-wise test set generation for {$file}\n\n");
+	$time = microtime(true);
+	$allPairs = new GreenCape\AllPairs\Combinator(
+		new GreenCape\AllPairs\QictStrategy(),
+		new GreenCape\AllPairs\FileReader($base . $file),
+		new GreenCape\AllPairs\ConsoleWriter()
+	);
+	$result = $allPairs->combine();
+	$time = microtime(true) - $time;
+
+	// Display results
+	print("\nGenerated " . count($result) . " test sets in {$time} seconds.\n");
+}
