@@ -25,7 +25,7 @@ class QictStrategy implements Strategy
 	/** @var  int[]  Rectangular array; does not change, used to generate unusedCounts array */
 	private $allPairsDisplay = array();
 
-	/** @var  \PairHash  Square array -- changes */
+	/** @var  PairHash  Square array -- changes */
 	private $unusedPairsSearch;
 
 	/** @var  int[]  Count of each parameter value in unusedPairs List. The indexes are parameter values, cell values are counts of how many times the parameter value appears in the unusedPairs collection */
@@ -64,7 +64,7 @@ class QictStrategy implements Strategy
 		foreach ($parameterDefinition as $position => $parameter)
 		{
 			$this->parameterLabels[$position] = $parameter->getLabel();
-			$values = array();
+			$values                           = array();
 			for ($i = 0; $i < count($parameter); ++$i)
 			{
 				$values[$i]                    = $kk;
@@ -113,14 +113,14 @@ class QictStrategy implements Strategy
 	private function chooseBestTestSet($candidateSets)
 	{
 		$mostPairsCaptured = 0;
-		$bestTestSet = null;
+		$bestTestSet       = null;
 		foreach ($candidateSets as $set)
 		{
 			$pairsCaptured = $this->countPairsCaptured($set, $this->unusedPairsSearch);
 			if ($pairsCaptured >= $mostPairsCaptured)
 			{
 				$mostPairsCaptured = $pairsCaptured;
-				$bestTestSet = $set;
+				$bestTestSet       = $set;
 			}
 		}
 		$this->updateState($bestTestSet);
@@ -145,6 +145,8 @@ class QictStrategy implements Strategy
 	}
 
 	/**
+	 * @param $testSets
+	 *
 	 * @return array
 	 */
 	private function formatReturnValue($testSets)
@@ -163,7 +165,15 @@ class QictStrategy implements Strategy
 		return $result;
 	}
 
-	private function countPairsCaptured($ts, \PairHash $unusedPairsSearch) // number of unused pairs captured by testSet ts
+	/**
+	 * Get number of unused pairs captured by testSet ts
+	 *
+	 * @param          $ts
+	 * @param PairHash $unusedPairsSearch
+	 *
+	 * @return int
+	 */
+	private function countPairsCaptured($ts, PairHash $unusedPairsSearch)
 	{
 		$ans = 0;
 		for ($i = 0; $i <= count($ts) - 2; ++$i)
@@ -333,5 +343,4 @@ class QictStrategy implements Strategy
 			$ordering[$i] = $temp;
 		}
 	}
-
 }
