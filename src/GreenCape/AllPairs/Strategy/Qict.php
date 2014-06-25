@@ -25,7 +25,7 @@ class QictStrategy implements Strategy
 	/** @var  int[]  Rectangular array; does not change, used to generate unusedCounts array */
 	private $allPairsDisplay = array();
 
-	/** @var  \Array2D  Square array -- changes */
+	/** @var  \PairHash  Square array -- changes */
 	private $unusedPairsSearch;
 
 	/** @var  int[]  Count of each parameter value in unusedPairs List. The indexes are parameter values, cell values are counts of how many times the parameter value appears in the unusedPairs collection */
@@ -83,7 +83,7 @@ class QictStrategy implements Strategy
 	 */
 	private function createPairs()
 	{
-		$this->unusedPairsSearch = new \Array2D;
+		$this->unusedPairsSearch = new PairHash;
 		for ($i = 0; $i < $this->numberParameters - 1; ++$i)
 		{
 			for ($j = $i + 1; $j < $this->numberParameters; ++$j)
@@ -163,7 +163,7 @@ class QictStrategy implements Strategy
 		return $result;
 	}
 
-	private function countPairsCaptured($ts, \Array2D $unusedPairsSearch) // number of unused pairs captured by testSet ts
+	private function countPairsCaptured($ts, \PairHash $unusedPairsSearch) // number of unused pairs captured by testSet ts
 	{
 		$ans = 0;
 		for ($i = 0; $i <= count($ts) - 2; ++$i)
