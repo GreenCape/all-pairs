@@ -4,160 +4,258 @@ namespace GreenCape\AllPairs;
 
 class QictStrategy implements Strategy
 {
-	/** @var  int  Number of parameters */
-	private $numberParameters;
-
-	/** @var  string[]  One-dimensional array of all parameters */
-	private $parameterLabels = array();
-
-	/** @var  string[]  One-dimensional array of all parameter values */
-	private $parameterValues = array();
-
-	/** @var  array  List of pairs which have not yet been captured */
-	private $unusedPairs = array();
-
-	/** @var  array[]  In-memory representation of input file as integers */
-	private $legalValues = array();
-
-	/** @var  int[] $parameterPositions The parameter position for a given value. The indexes are parameter values, the cell values are positions within a testSet */
-	private $parameterPositions = array();
-
-	/** @var  int[]  Rectangular array; does not change, used to generate unusedCounts array */
-	private $allPairsDisplay = array();
-
-	/** @var  PairHash  Square array -- changes */
-	private $unusedPairsSearch;
-
-	/** @var  int[]  Count of each parameter value in unusedPairs List. The indexes are parameter values, cell values are counts of how many times the parameter value appears in the unusedPairs collection */
-	private $unusedCounts = array();
-
 	/**
-	 * @param   Reader $parameterDefinition
+	 * @param   Reader $reader
 	 *
 	 * @return array
 	 */
-	public function combine(Reader $parameterDefinition)
+	public function combine(Reader $reader)
 	{
-		$this->importParameters($parameterDefinition->getParameters());
-		$this->createPairs();
+		$parameterDefinition = $reader->getParameters();
 
-		/** @var  int $poolSize Number of candidate testSet arrays to generate before picking one to add to testSets list */
+		/** @var  int */
+		$numberParameterValues = 0;
+
+		/** @var  int Number of candidate testSet arrays to generate before picking one to add to
+		 *            testSets list */
 		$poolSize = 20;
+
+		/** @var  int[][]  In-memory representation of input file as integers */
+		$legalValues = array();
+
+		/** @var  string[] One-dimensional array of all parameter values */
+		$parameterValues = array();
+
+		/** @var  int[] Rectangular array; does not change, used to generate unusedCounts array */
+		$allPairsDisplay = array();
+
+		/** @var  array List of pairs which have not yet been captured */
+		$unusedPairs = array();
+
+		/** @var  array Square array -- changes */
+		$unusedPairsSearch = array();
+
+		/** @var  int[] The parameter position for a given value. The indexes are parameter values, the cell values are positions within a testSet */
+		$parameterPositions = array();
+
+		/** @var  int[] Count of each parameter value in unusedPairs List. The indexes are parameter values, cell values are counts of how many times the parameter value appears in the unusedPairs collection */
+		$unusedCounts = array();
+
+		/** @var  array The main result data structure */
 		$testSets = array();
-		while (count($this->unusedPairs) > 0)
+
+		$labels           = array();
+		$kk               = 0; // points into parameterValues
+		$numberParameters = count($parameterDefinition);
+		foreach ($parameterDefinition as $strValues)
 		{
-			$testSets[] = $this->chooseBestTestSet($this->generateCandidates($poolSize));
-		}
+			$numberParameterValues += count($strValues);
 
-		return $this->formatReturnValue($testSets);
-	}
-
-	/**
-	 * @param Parameter[] $parameterDefinition
-	 */
-	private function importParameters($parameterDefinition)
-	{
-		$this->numberParameters = count($parameterDefinition);
-
-		/** @var  int $kk Points into parameterValues */
-		$kk = 0;
-		foreach ($parameterDefinition as $position => $parameter)
-		{
-			$this->parameterLabels[$position] = $parameter->getLabel();
-			$values                           = array();
-			for ($i = 0; $i < count($parameter); ++$i)
+			$values = array();
+			for ($i = 0; $i < count($strValues); ++$i)
 			{
-				$values[$i]                    = $kk;
-				$this->parameterValues[$kk]    = $parameter[$i];
-				$this->parameterPositions[$kk] = $position;
+				$values[$i]           = $kk;
+				$parameterValues[$kk] = $strValues[$i];
 				++$kk;
 			}
-			$this->legalValues[] = $values;
-		}
-	}
 
-	/**
-	 * Process the legalValues array to populate the allPairsDisplay & unusedPairs & unusedPairsSearch collections
-	 *
-	 * @return  void
-	 */
-	private function createPairs()
-	{
-		$this->unusedPairsSearch = new PairHash;
-		for ($i = 0; $i < $this->numberParameters - 1; ++$i)
+			$labels[]      = $strValues->getLabel();
+			$legalValues[] = $values;
+		}
+
+		// Process the legalValues array to populate the allPairsDisplay & unusedPairs & unusedPairsSearch collections
+		$currPair = 0;
+		for ($i = 0; $i <= count($legalValues) - 2; ++$i)
 		{
-			for ($j = $i + 1; $j < $this->numberParameters; ++$j)
+			for ($j = $i + 1; $j <= count($legalValues) - 1; ++$j)
 			{
-				foreach ($this->legalValues[$i] as $x)
+				$firstRow  = $legalValues[$i];
+				$secondRow = $legalValues[$j];
+				for ($x = 0; $x < count($firstRow); ++$x)
 				{
-					foreach ($this->legalValues[$j] as $y)
+					for ($y = 0; $y < count($secondRow); ++$y)
 					{
-						$this->unusedPairs[]     = array($x, $y);
-						$this->allPairsDisplay[] = array($x, $y);
-						$this->unusedPairsSearch->set($x, $y, 1);
-						@$this->unusedCounts[$x]++;
-						@$this->unusedCounts[$y]++;
+						$allPairsDisplay[$currPair][0] = $firstRow[$x]; // Pair first value
+						$allPairsDisplay[$currPair][1] = $secondRow[$y]; // Pair second value
+
+						$aPair         = array(
+							$firstRow[$x],
+							$secondRow[$y]
+						);
+						$unusedPairs[] = $aPair;
+
+						$unusedPairsSearch[$this->hash($firstRow[$x], $secondRow[$y])] = 1;
+
+						++$currPair;
 					}
 				}
 			}
 		}
-	}
 
-	/**
-	 * Iterate through candidateSets to determine the best candidate
-	 *
-	 * @param $candidateSets
-	 *
-	 * @return array
-	 */
-	private function chooseBestTestSet($candidateSets)
-	{
-		$mostPairsCaptured = 0;
-		$bestTestSet       = null;
-		foreach ($candidateSets as $set)
+		// Process legalValues to populate parameterPositions array
+		$k = 0; // points into parameterPositions
+		for ($i = 0; $i < count($legalValues); ++$i)
 		{
-			$pairsCaptured = $this->countPairsCaptured($set, $this->unusedPairsSearch);
-			if ($pairsCaptured >= $mostPairsCaptured)
+			$curr = $legalValues[$i];
+			for ($j = 0; $j < count($curr); ++$j)
 			{
-				$mostPairsCaptured = $pairsCaptured;
-				$bestTestSet       = $set;
+				$parameterPositions[$k++] = $i;
 			}
 		}
-		$this->updateState($bestTestSet);
 
-		return $bestTestSet;
-	}
-
-	/**
-	 * @param $poolSize
-	 *
-	 * @return array
-	 */
-	private function generateCandidates($poolSize)
-	{
-		$candidateSets = array();
-		for ($candidate = 0; $candidate < $poolSize; ++$candidate)
+		// Process allPairsDisplay to determine unusedCounts array
+		for ($i = 0; $i < count($allPairsDisplay); ++$i)
 		{
-			$candidateSets[$candidate] = $this->generateRandomTestSet();
+			@$unusedCounts[$allPairsDisplay[$i][0]]++;
+			@$unusedCounts[$allPairsDisplay[$i][1]]++;
 		}
 
-		return $candidateSets;
-	}
+		while (count($unusedPairs) > 0)
+		{
+			$candidateSets = array(); // holds candidate testSets
 
-	/**
-	 * @param $testSets
-	 *
-	 * @return array
-	 */
-	private function formatReturnValue($testSets)
-	{
+			for ($candidate = 0; $candidate < $poolSize; ++$candidate)
+			{
+				$testSet = array(); // make an empty candidate testSet
+
+				// Pick "best" unusedPair -- the pair which has the sum of the most unused values
+				$bestWeight      = 0;
+				$indexOfBestPair = 0;
+				for ($i = 0; $i < count($unusedPairs); ++$i)
+				{
+					$curr   = $unusedPairs[$i];
+					$weight = $unusedCounts[$curr[0]] + $unusedCounts[$curr[1]];
+					if ($weight > $bestWeight)
+					{
+						$bestWeight      = $weight;
+						$indexOfBestPair = $i;
+					}
+				}
+
+				$best = $unusedPairs[$indexOfBestPair];
+
+				$firstPos  = $parameterPositions[$best[0]]; // position of first value from best unused pair
+				$secondPos = $parameterPositions[$best[1]];
+
+				// Generate a random order to fill parameter positions
+				$ordering = array();
+				for ($i = 0; $i < $numberParameters; ++$i)
+				{
+					$ordering[$i] = $i;
+				}
+
+				// Put firstPos at ordering[0] && secondPos at ordering[1]
+				$ordering[0]         = $firstPos;
+				$ordering[$firstPos] = 0;
+
+				$t                    = $ordering[1];
+				$ordering[1]          = $secondPos;
+				$ordering[$secondPos] = $t;
+
+				// Shuffle ordering[2] thru ordering[last]
+				for ($i = 2; $i < count($ordering); $i++)
+				{
+					// Knuth shuffle. start at i=2 because want first two slots left alone
+					$j            = rand($i, $numberParameters - 1);
+					$temp         = $ordering[$j];
+					$ordering[$j] = $ordering[$i];
+					$ordering[$i] = $temp;
+				}
+
+				// Place two parameter values from best unused pair into candidate testSet
+				$testSet[$firstPos]  = $best[0];
+				$testSet[$secondPos] = $best[1];
+
+				// For remaining parameter positions in candidate testSet, try each possible legal value, picking the one which captures the most unused pairs . . .
+				for ($i = 2; $i < $numberParameters; ++$i)
+				{ // start at 2 because first two parameter have been placed
+					$currPos        = $ordering[$i];
+					$possibleValues = $legalValues[$currPos];
+
+					$highestCount = 0; // highest of these counts
+					$bestJ        = 0; // index of the possible value which yields the highestCount
+					for ($j = 0; $j < count($possibleValues); ++$j)
+					{ // examine pairs created by each possible value and each parameter value already there
+						$currentCount = 0; // count the unusedPairs grabbed by adding a possible value
+						for ($p = 0; $p < $i; ++$p)
+						{ // parameters already placed
+							$candidatePair = array(
+								$possibleValues[$j],
+								$testSet[$ordering[$p]]
+							);
+
+							if ($unusedPairsSearch[$this->hash($candidatePair[0], $candidatePair[1])] == 1)
+							{
+								++$currentCount;
+							}
+						}
+						if ($currentCount > $highestCount)
+						{
+							$highestCount = $currentCount;
+							$bestJ        = $j;
+						}
+					}
+
+					// Place the value which captured the most pairs
+					$testSet[$currPos] = $possibleValues[$bestJ];
+				}
+
+				// Add candidate testSet to candidateSets array
+				$candidateSets[$candidate] = $testSet;
+			}
+
+			// Iterate through candidateSets to determine the best candidate
+			$indexOfBestCandidate = rand(0, count($candidateSets) - 1); // pick a random index as best
+			$mostPairsCaptured    = $this->numberPairsCaptured($candidateSets[$indexOfBestCandidate], $unusedPairsSearch);
+
+			for ($i = 0; $i < count($candidateSets); ++$i)
+			{
+				$pairsCaptured = $this->numberPairsCaptured($candidateSets[$i], $unusedPairsSearch);
+				if ($pairsCaptured > $mostPairsCaptured)
+				{
+					$mostPairsCaptured    = $pairsCaptured;
+					$indexOfBestCandidate = $i;
+				}
+			}
+
+			// Add the best candidate to the main testSets List
+			$bestTestSet = $candidateSets[$indexOfBestCandidate];
+			$testSets[]  = $bestTestSet;
+
+			// Now perform all updates
+			for ($i = 0; $i <= $numberParameters - 2; ++$i)
+			{
+				for ($j = $i + 1; $j <= $numberParameters - 1; ++$j)
+				{
+					$v1 = $bestTestSet[$i]; // value 1 of newly added pair
+					$v2 = $bestTestSet[$j]; // value 2 of newly added pair
+
+					--$unusedCounts[$v1];
+					--$unusedCounts[$v2];
+
+					$unusedPairsSearch[$this->hash($v1, $v2)] = 0;
+
+					for ($p = 0; $p < count($unusedPairs); ++$p)
+					{
+						$curr = $unusedPairs[$p];
+
+						if ($curr[0] == $v1 && $curr[1] == $v2)
+						{
+							unset($unusedPairs[$p]);
+							$unusedPairs = array_values($unusedPairs);
+						}
+					}
+				}
+			}
+		}
+
 		$result = array();
 		foreach ($testSets as $set)
 		{
 			$parameters = array();
-			for ($j = 0; $j < $this->numberParameters; ++$j)
+			for ($j = 0; $j < count($set); ++$j)
 			{
-				$parameters[$this->parameterLabels[$j]] = $this->parameterValues[$set[$j]];
+				$parameters[$labels[$j]] = $parameterValues[$set[$j]];
 			}
 			$result[] = $parameters;
 		}
@@ -165,22 +263,14 @@ class QictStrategy implements Strategy
 		return $result;
 	}
 
-	/**
-	 * Get number of unused pairs captured by testSet ts
-	 *
-	 * @param          $ts
-	 * @param PairHash $unusedPairsSearch
-	 *
-	 * @return int
-	 */
-	private function countPairsCaptured($ts, PairHash $unusedPairsSearch)
+	private function numberPairsCaptured($ts, $unusedPairsSearch) // number of unused pairs captured by testSet ts
 	{
 		$ans = 0;
 		for ($i = 0; $i <= count($ts) - 2; ++$i)
 		{
 			for ($j = $i + 1; $j <= count($ts) - 1; ++$j)
 			{
-				if ($unusedPairsSearch->get($ts[$i], $ts[$j]) == 1)
+				if ($unusedPairsSearch[$this->hash($ts[$i], $ts[$j])] == 1)
 				{
 					++$ans;
 				}
@@ -190,157 +280,11 @@ class QictStrategy implements Strategy
 		return $ans;
 	}
 
-	/**
-	 * Perform all updates
-	 *
-	 * @param $testSet
-	 *
-	 * @return void
-	 */
-	private function updateState($testSet)
+	private function hash($a, $b)
 	{
-		$length = count($testSet);
-		for ($i = 0; $i < $length - 1; ++$i)
-		{
-			for ($j = $i + 1; $j < $length; ++$j)
-			{
-				$v1 = $testSet[$i]; // value 1 of newly added pair
-				$v2 = $testSet[$j]; // value 2 of newly added pair
+		$values = array($a, $b);
+		sort($values);
 
-				--$this->unusedCounts[$v1];
-				--$this->unusedCounts[$v2];
-
-				$this->unusedPairsSearch->set($v1, $v2, 0);
-
-				for ($p = 0; $p < count($this->unusedPairs); ++$p)
-				{
-					$curr = $this->unusedPairs[$p];
-
-					if ($curr[0] == $v1 && $curr[1] == $v2)
-					{
-						unset($this->unusedPairs[$p]);
-						$this->unusedPairs = array_values($this->unusedPairs);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * @return array
-	 */
-	private function generateRandomTestSet()
-	{
-		$testSet = array();
-		$next    = $this->findNextPair();
-
-		$firstPos  = $this->parameterPositions[$next[0]]; // position of first value from best unused pair
-		$secondPos = $this->parameterPositions[$next[1]];
-		$ordering  = $this->orderParameters($firstPos, $secondPos);
-
-		// Place two parameter values from best unused pair into candidate testSet
-		$testSet[$firstPos]  = $next[0];
-		$testSet[$secondPos] = $next[1];
-
-		// For remaining parameter positions in candidate testSet, try each possible legal value, picking the one which captures the most unused pairs . . .
-		for ($i = 2; $i < $this->numberParameters; ++$i)
-		{ // start at 2 because first two parameter have been placed
-			$currPos        = $ordering[$i];
-			$possibleValues = $this->legalValues[$currPos];
-
-			$highestCount = 0; // highest of these counts
-			$bestJ        = 0; // index of the possible value which yields the highestCount
-			for ($j = 0; $j < count($possibleValues); ++$j)
-			{ // examine pairs created by each possible value and each parameter value already there
-				$currentCount = 0; // count the unusedPairs grabbed by adding a possible value
-				for ($p = 0; $p < $i; ++$p)
-				{ // parameters already placed
-					if ($this->unusedPairsSearch->get($possibleValues[$j], $testSet[$ordering[$p]]) == 1)
-					{
-						++$currentCount;
-					}
-				}
-				if ($currentCount > $highestCount)
-				{
-					$highestCount = $currentCount;
-					$bestJ        = $j;
-				}
-			}
-
-			// Place the value which captured the most pairs
-			$testSet[$currPos] = $possibleValues[$bestJ];
-		}
-
-		return $testSet;
-	}
-
-	/**
-	 * Pick "best" unusedPair -- the pair which has the sum of the most unused values
-	 *
-	 * @return array
-	 */
-	private function findNextPair()
-	{
-		$bestWeight      = 0;
-		$indexOfBestPair = 0;
-		foreach ($this->unusedPairs as $i => $curr)
-		{
-			$weight = $this->unusedCounts[$curr[0]] + $this->unusedCounts[$curr[1]];
-			if ($weight >= $bestWeight)
-			{
-				$bestWeight      = $weight;
-				$indexOfBestPair = $i;
-			}
-		}
-
-		return $this->unusedPairs[$indexOfBestPair];
-	}
-
-	/**
-	 * Generate a random order to fill parameter positions
-	 *
-	 * @param $firstPos
-	 * @param $secondPos
-	 *
-	 * @return array
-	 */
-	private function orderParameters($firstPos, $secondPos)
-	{
-		$ordering = array();
-		for ($i = 0; $i < $this->numberParameters; ++$i)
-		{
-			$ordering[$i] = $i;
-		}
-
-		// Put firstPos at ordering[0] && secondPos at ordering[1]
-		$ordering[0]         = $firstPos;
-		$ordering[$firstPos] = 0;
-
-		$t                    = $ordering[1];
-		$ordering[1]          = $secondPos;
-		$ordering[$secondPos] = $t;
-
-		$this->shuffleOrdering($ordering);
-
-		return $ordering;
-	}
-
-	/**
-	 * Shuffle ordering[2] thru ordering[last]
-	 *
-	 * @param &$ordering
-	 *
-	 * @return void
-	 */
-	private function shuffleOrdering(&$ordering)
-	{
-		for ($i = 2; $i < $this->numberParameters; $i++)
-		{
-			// Knuth shuffle. start at i=2 because want first two slots left alone
-			$j            = rand($i, $this->numberParameters - 1);
-			$temp         = $ordering[$j];
-			$ordering[$j] = $ordering[$i];
-			$ordering[$i] = $temp;
-		}
+		return '{' . implode(', ', $values) . '}';
 	}
 }

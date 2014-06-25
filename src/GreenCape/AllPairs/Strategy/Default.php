@@ -219,25 +219,4 @@ class DefaultStrategy implements Strategy
 			'useCount' => 0
 		);
 	}
-
-	private function foreachParameterPair(callable $callable)
-	{
-		foreach ($this->tokenizedParameterList as $parameterPosition1 => $parameter1)
-		{
-			foreach ($this->tokenizedParameterList as $parameterPosition2 => $parameter2)
-			{
-				if ($parameterPosition2 <= $parameterPosition1)
-				{
-					continue;
-				}
-				foreach ($parameter1 as $value1)
-				{
-					foreach ($parameter2 as $value2)
-					{
-						$callable($value1, $value2);
-					}
-				}
-			}
-		}
-	}
 }
