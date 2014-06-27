@@ -17,15 +17,19 @@ generated and the time it took on an average PC.
 
 ### Number of Test Sets
 
+To judge the quality of an algorithm, the lower and upper bound for the number of test sets needed to cover all pairs
+can be used. A lower bound is given by the product of the size of the two largest parameter sets, because all pairs
+made up from the two parameters have to be covered. An upper bound is given by all possible combinations.
+
 <table>
 <caption>Number of generated test sets</caption>
-<tr><td></td><th>Default</th><th>QICT</th></tr>
-<tr><th>testData.txt</th><td>12</td><td>12</td></tr>
-<tr><th>hardware.txt</th><td>17</td><td>21</td></tr>
-<tr><th>server.txt</th><td>25</td><td>25</td></tr>
-<tr><th>prime.txt</th><td>35</td><td>35</td></tr>
-<tr><th>volume.txt</th><td>60</td><td>60</td></tr>
-<tr><th>big.txt</th><td>411</td><td>256</td></tr>
+<tr><td></td><th>Lower Bound</th><th>Default</th><th>QICT</th><th>Upper Bound</th></tr>
+<tr><th>testData.txt</th><td>4*3 = 12</td><td>12</td><td>12</td><td>2*4*3*2 = 48</td></tr>
+<tr><th>hardware.txt</th><td>4*4 = 16</td><td>17</td><td>21</td><td>3*3*4*2*4*4 = 1,152</td></tr>
+<tr><th>server.txt</th><td>5*5 = 25</td><td>25</td><td>25</td><td>2*5*4*5 = 200</td></tr>
+<tr><th>prime.txt</th><td>7*5 = 35</td><td>35</td><td>35</td><td>2*3*5*7 = 210</td></tr>
+<tr><th>volume.txt</th><td>8*7 = 56</td><td>60</td><td>60</td><td>7*7*2*3*8*2 = 4,704</td></tr>
+<tr><th>big.txt</th><td>10*10 = 100</td><td>411</td><td>256</td><td>10<sup>26</sup> = 100,000,000,000,000,000,000,000,000</td></tr>
 </table>
 
 ### Computing time
