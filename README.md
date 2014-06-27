@@ -14,7 +14,18 @@ This project follows [semantic versioning](http://semver.org).
 
 ## Roadmap
 
-@todo
+  - Sub-models
+  - Conditional constraints
+  - Unconditional constraints
+  - Command line tool
+  - Separator definition (`/d:`)
+  - Order (pairs, triples, n-tuples, `/o:`)
+  - Aliasing
+  - Negative testing
+  - Weighting
+  - Seeding
+  - Randomization
+  - Output suitable for PHPUnit (@dataprovider)
 
 ## Further Reading
 
