@@ -28,6 +28,10 @@ class FileReader implements Reader
 				continue;
 			}
 			$lineTokens = explode($labelDelimiter, $line, 2);
+			if (count($lineTokens) != 2)
+			{
+				continue;
+			}
 			$values  = explode($valueDelimiter, $lineTokens[1]);
 			for ($i = 0; $i < count($values); ++$i)
 			{

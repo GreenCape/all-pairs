@@ -21,8 +21,10 @@ generated and the time it took on an average PC.
 <caption>Number of generated test sets</caption>
 <tr><td></td><th>Default</th><th>QICT</th></tr>
 <tr><th>testData.txt</th><td>12</td><td>12</td></tr>
+<tr><th>hardware.txt</th><td>17</td><td>21</td></tr>
 <tr><th>server.txt</th><td>25</td><td>25</td></tr>
 <tr><th>prime.txt</th><td>35</td><td>35</td></tr>
+<tr><th>volume.txt</th><td>60</td><td>60</td></tr>
 <tr><th>big.txt</th><td>411</td><td>256</td></tr>
 </table>
 
@@ -32,8 +34,10 @@ generated and the time it took on an average PC.
 <caption>Computing time in seconds</caption>
 <tr><td></td><th>Default</th><th>QICT</th></tr>
 <tr><th>testData.txt</th><td>0.0027</td><td>0,12</td></tr>
+<tr><th>hardware.txt</th><td>0.0094</td><td>0,21</td></tr>
 <tr><th>server.txt</th><td>0.0068</td><td>0.04</td></tr>
 <tr><th>prime.txt</th><td>0.0072</td><td>0.14</td></tr>
+<tr><th>volume.txt</th><td>0.0284</td><td>0,78</td></tr>
 <tr><th>big.txt</th><td>10.0269</td><td>1675.16</td></tr>
 </table>
 
@@ -69,6 +73,52 @@ a	d	j
 b	c	j
 a	e	j
 a	f	j</pre></td></tr>
+</table>
+
+#### hardware.txt
+
+<table>
+<caption>Generated test sets for hardware.txt (abbreviated for readability)</caption>
+<tr><th>Default</th><th>QICT</th></tr>
+<tr><td><pre>PLATF.	CPUS	RAM	HDD	OS	IE
+x86	Single	128MB	SCSI	NT4	4.0
+ia64	Dual	1GB	IDE	Win2K	4.0
+amd64	Quad	4GB	SCSI	WinXP	4.0
+ia64	Single	64GB	IDE	Win2K3	4.0
+x86	Quad	1GB	IDE	NT4	5.0
+amd64	Single	128MB	SCSI	Win2K	5.0
+x86	Dual	64GB	SCSI	WinXP	5.0
+ia64	Dual	4GB	SCSI	Win2K3	5.0
+ia64	Single	4GB	IDE	NT4	5.5
+x86	Quad	64GB	SCSI	Win2K	5.5
+amd64	Dual	128MB	IDE	WinXP	5.5
+amd64	Single	1GB	SCSI	Win2K3	5.5
+amd64	Dual	64GB	IDE	NT4	6.0
+x86	Single	4GB	IDE	Win2K	6.0
+ia64	Single	1GB	SCSI	WinXP	6.0
+ia64	Quad	128MB	IDE	Win2K3	6.0
+x86	Dual	128MB	SCSI	Win2K3	4.0</pre></td><td><pre>PLATF.	CPUS	RAM	HDD	OS	IE
+x86	Single	128MB	SCSI	NT4	4.0
+ia64	Dual	128MB	IDE	Win2K	5.0
+amd64	Quad	1GB	IDE	NT4	5.5
+ia64	Quad	4GB	SCSI	WinXP	6.0
+amd64	Single	64GB	SCSI	Win2K3	5.0
+x86	Dual	64GB	IDE	WinXP	4.0
+x86	Single	1GB	SCSI	Win2K	5.5
+x86	Single	4GB	IDE	Win2K3	6.0
+amd64	Dual	4GB	SCSI	NT4	6.0
+ia64	Dual	1GB	SCSI	Win2K3	4.0
+amd64	Quad	128MB	SCSI	Win2K	4.0
+ia64	Single	64GB	SCSI	NT4	5.5
+x86	Quad	1GB	SCSI	WinXP	5.0
+amd64	Single	128MB	SCSI	WinXP	5.5
+x86	Single	4GB	SCSI	Win2K	4.0
+x86	Quad	64GB	SCSI	Win2K	6.0
+x86	Quad	128MB	SCSI	Win2K3	5.5
+x86	Dual	4GB	SCSI	NT4	5.5
+x86	Single	128MB	SCSI	NT4	6.0
+x86	Single	1GB	SCSI	NT4	6.0
+x86	Single	4GB	SCSI	NT4	5.0</pre></td></tr>
 </table>
 
 #### prime.txt
@@ -206,3 +256,132 @@ Windows	Apache	MariaDB	PHP 5.5
 Windows	MS-IIS	MySQL	PHP 5.6
 Windows	LiteSp.	MySQL	PHP 5.3</pre></td></tr>
 </table>
+
+#### volume.txt
+
+<table>
+<caption>Generated test sets for volume.txt</caption>
+<tr><th>Default</th><th>QICT</th></tr>
+<tr><td><pre>TYPE	SIZE	FORMAT	FSYSTEM	CLUSTER	COMPRESSION
+Primary	10	quick	FAT	512	on
+Logical	100	slow	FAT32	512	off
+Single	500	slow	NTFS	512	on
+Span	1000	quick	FAT	512	off
+Stripe	5000	quick	FAT32	512	on
+Mirror	10000	quick	NTFS	512	off
+RAID-5	40000	slow	FAT	512	on
+Primary	100	quick	NTFS	1024	on
+Logical	10	slow	FAT	1024	off
+Single	1000	slow	FAT32	1024	on
+Span	500	quick	FAT32	1024	off
+Stripe	10000	slow	FAT	1024	on
+Mirror	5000	slow	FAT	1024	off
+RAID-5	10	quick	NTFS	1024	off
+Primary	500	slow	FAT	2048	off
+Logical	1000	quick	NTFS	2048	on
+Single	10	quick	FAT32	2048	off
+Span	100	quick	FAT	2048	on
+Stripe	40000	slow	NTFS	2048	off
+Mirror	10	slow	FAT32	2048	on
+RAID-5	5000	quick	FAT32	2048	on
+Primary	1000	slow	FAT32	4096	off
+Logical	500	quick	FAT	4096	on
+Single	100	quick	FAT	4096	off
+Span	10	slow	NTFS	4096	on
+Stripe	10	quick	FAT32	4096	off
+Mirror	40000	quick	FAT32	4096	on
+RAID-5	10000	slow	NTFS	4096	off
+Primary	5000	slow	NTFS	8192	off
+Logical	10000	slow	FAT32	8192	on
+Single	40000	quick	FAT	8192	off
+Span	10	slow	NTFS	8192	on
+Stripe	100	slow	FAT	8192	on
+Mirror	500	quick	FAT32	8192	off
+RAID-5	1000	quick	FAT	8192	on
+Primary	10000	quick	FAT32	16384	on
+Logical	5000	quick	NTFS	16384	off
+Single	10	slow	FAT	16384	on
+Span	40000	slow	FAT32	16384	off
+Stripe	500	quick	NTFS	16384	on
+Mirror	100	slow	NTFS	16384	off
+RAID-5	100	slow	FAT32	16384	off
+Primary	40000	quick	NTFS	32768	on
+Logical	10	quick	FAT	32768	off
+Single	5000	slow	FAT32	32768	on
+Span	10000	slow	FAT	32768	off
+Stripe	1000	quick	NTFS	32768	off
+Mirror	100	slow	FAT	32768	on
+RAID-5	500	slow	FAT32	32768	on
+Primary	10	quick	FAT32	65536	off
+Logical	40000	slow	NTFS	65536	on
+Single	10000	quick	NTFS	65536	off
+Span	5000	quick	FAT	65536	on
+Stripe	100	slow	FAT32	65536	off
+Mirror	1000	slow	FAT	65536	on
+RAID-5	500	quick	FAT	65536	off
+Primary	1000	slow	FAT	16384	off
+Primary	5000	quick	FAT	4096	on
+Primary	10000	slow	FAT	2048	off
+Primary	40000	quick	FAT32	1024	on</pre></td><td><pre>TYPE	SIZE	FORMAT	FSYSTEM	CLUSTER	COMPRESSION
+Primary	10	quick	FAT	512	on
+Logical	100	slow	FAT	1024	off
+Single	500	quick	FAT32	2048	off
+Span	1000	slow	NTFS	2048	on
+Stripe	5000	slow	FAT32	4096	on
+Mirror	10000	quick	NTFS	4096	off
+RAID-5	40000	quick	FAT32	1024	on
+Primary	40000	slow	NTFS	8192	off
+Logical	100	quick	FAT32	16384	on
+Single	10000	slow	FAT	32768	on
+Span	5000	quick	FAT	65536	off
+Stripe	10	quick	NTFS	32768	off
+Mirror	500	slow	FAT	16384	on
+RAID-5	1000	slow	FAT	512	off
+Primary	10	slow	FAT32	65536	on
+Logical	1000	quick	FAT32	8192	on
+Single	100	quick	NTFS	512	on
+Span	500	quick	FAT32	512	on
+Stripe	10000	quick	FAT	2048	on
+Mirror	5000	quick	FAT32	32768	on
+RAID-5	10	quick	FAT	4096	on
+Single	40000	quick	FAT	16384	off
+Primary	500	quick	NTFS	1024	on
+Logical	500	quick	NTFS	65536	on
+Span	10	quick	FAT	8192	on
+Stripe	100	quick	FAT	8192	on
+Mirror	1000	quick	FAT	1024	on
+RAID-5	5000	quick	NTFS	16384	on
+RAID-5	10000	quick	FAT32	65536	on
+Logical	40000	quick	FAT	2048	on
+Primary	100	quick	FAT	4096	on
+Span	100	quick	FAT	32768	on
+Single	1000	quick	FAT	4096	on
+Stripe	40000	quick	FAT	512	on
+Mirror	10	quick	FAT	2048	on
+Single	5000	quick	FAT	1024	on
+Primary	10000	quick	FAT	8192	on
+Primary	1000	quick	FAT	16384	on
+Primary	5000	quick	FAT	2048	on
+Logical	10	quick	FAT	512	on
+Logical	5000	quick	FAT	512	on
+Logical	10000	quick	FAT	512	on
+Single	10	quick	FAT	1024	on
+Span	10000	quick	FAT	1024	on
+Span	40000	quick	FAT	4096	on
+Stripe	500	quick	FAT	1024	on
+Stripe	1000	quick	FAT	65536	on
+Mirror	100	quick	FAT	65536	on
+Mirror	40000	quick	FAT	512	on
+RAID-5	100	quick	FAT	2048	on
+RAID-5	500	quick	FAT	8192	on
+Primary	500	quick	FAT	32768	on
+Logical	500	quick	FAT	4096	on
+Logical	1000	quick	FAT	32768	on
+Single	5000	quick	FAT	8192	on
+Single	40000	quick	FAT	65536	on
+Span	10	quick	FAT	16384	on
+Stripe	10000	quick	FAT	16384	on
+Mirror	10	quick	FAT	8192	on
+RAID-5	40000	quick	FAT	32768	on</pre></td></tr>
+</table>
+

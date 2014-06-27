@@ -8,6 +8,8 @@ $files = array(
 	'/tests/data/server.txt',
 	'/original/testData.txt',
 	'/tests/data/prime.txt',
+	'/tests/data/volume.txt',
+	'/tests/data/hardware.txt',
 	'/tests/data/big.txt',
 );
 
