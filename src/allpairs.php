@@ -5,12 +5,12 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $base = '..';
 $files = array(
-	'/tests/data/server.txt',
-	'/original/testData.txt',
-	'/tests/data/prime.txt',
+//	'/tests/data/server.txt',
+//	'/original/testData.txt',
+//	'/tests/data/prime.txt',
 	'/tests/data/volume.txt',
 	'/tests/data/hardware.txt',
-	'/tests/data/big.txt',
+//	'/tests/data/big.txt',
 );
 
 foreach ($files as $file)

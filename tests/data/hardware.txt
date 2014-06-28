@@ -2,7 +2,7 @@
 # Different machine configurations
 #
 
-PLATFORM: x86, ia64, amd64
+PLATFORM: x86, ia64, amd64 # Inline comment
 CPUS:     Single, Dual, Quad
 RAM:      128MB, 1GB, 4GB, 64GB
 HDD:      SCSI, IDE
@@ -27,4 +27,4 @@ IF [PLATFORM] in {"ia64", "amd64"} THEN [OS] in {"WinXP", "Win2K3"};
 # Constraints on parameters in the same sub-model are also fine
 #
 
-IF [PLATFORM] = "x86" THEN [RAM] &lt;> "64GB";
+IF [PLATFORM] = "x86" THEN [RAM] <> "64GB";
