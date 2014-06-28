@@ -11,27 +11,22 @@ class DefaultStrategy implements Strategy
 	private $label = array();
 
 	/**
-	 * @param Reader $reader
+	 * @param Parameter[] $parameterList
+	 * @param int         $order
 	 *
 	 * @return array
 	 */
-	public function combine(Reader $reader)
+	public function combine($parameterList, $order = 2)
 	{
-		$parameterList = $reader->getParameters();
-		$subModules    = $reader->getSubModules();
-		$constraints   = $reader->getConstraints();
-
-		return $this->generateTestSets($parameterList, $subModules, $constraints);
+		return $this->generateTestSets($parameterList);
 	}
 
 	/**
 	 * @param Parameter[] $parameterList
-	 * @param             $subModules
-	 * @param             $constraints
 	 *
 	 * @return array
 	 */
-	private function generateTestSets($parameterList, $subModules, $constraints)
+	private function generateTestSets($parameterList)
 	{
 		$this->tokenizeParameterList($parameterList);
 
@@ -188,6 +183,7 @@ class DefaultStrategy implements Strategy
 	{
 		$tokenKey = 0;
 		$ordering = array();
+		$this->tokenizedParameterList = array();
 		foreach ($parameterList as $parameterPosition => $parameter)
 		{
 			$this->label[$parameterPosition] = $parameter->getLabel();

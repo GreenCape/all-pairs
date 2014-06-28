@@ -5,9 +5,10 @@ namespace GreenCape\AllPairs;
 interface Strategy
 {
 	/**
-	 * @param Reader $reader
+	 * @param Parameter[] $parameterList
+	 * @param int         $order
 	 *
 	 * @return array
 	 */
-	public function combine(Reader $reader);
+	public function combine($parameterList, $order = 2);
 }

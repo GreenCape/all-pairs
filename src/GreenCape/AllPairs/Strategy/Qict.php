@@ -5,14 +5,13 @@ namespace GreenCape\AllPairs;
 class QictStrategy implements Strategy
 {
 	/**
-	 * @param   Reader $reader
+	 * @param  Parameter[] $parameterDefinition
+	 * @param int          $order
 	 *
 	 * @return array
 	 */
-	public function combine(Reader $reader)
+	public function combine($parameterDefinition, $order = 2)
 	{
-		$parameterDefinition = $reader->getParameters();
-
 		/** @var  int */
 		$numberParameterValues = 0;
 
