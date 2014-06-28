@@ -5,6 +5,9 @@ namespace GreenCape\AllPairs;
 class StringReader implements Reader
 {
 	private $fileContent = array();
+	private $parameters = array();
+	private $subModules = array();
+	private $constraints = array();
 
 	public function __construct($content)
 	{
@@ -19,38 +22,17 @@ class StringReader implements Reader
 	 */
 	public function getParameters($labelDelimiter = ':', $valueDelimiter = ',')
 	{
-		$parameterDefinition = array();
-		foreach ($this->fileContent as $line)
-		{
-			$line = trim($line);
-			if (empty($line) || $line[0] == '#')
-			{
-				continue;
-			}
-			$lineTokens = explode($labelDelimiter, $line, 2);
-			if (count($lineTokens) != 2)
-			{
-				continue;
-			}
-			$values  = explode($valueDelimiter, $lineTokens[1]);
-			for ($i = 0; $i < count($values); ++$i)
-			{
-				$values[$i] = trim($values[$i]);
-			}
-			$parameterDefinition[] = new Parameter($values, trim($lineTokens[0]));
-		}
-
-		return $parameterDefinition;
+		return $this->parameters;
 	}
 
 	public function getSubModules()
 	{
-		return null;
+		return $this->subModules;
 	}
 
 	public function getConstraints()
 	{
-		return null;
+		return $this->constraints;
 	}
 
 	private function parse($content)
@@ -85,11 +67,6 @@ class StringReader implements Reader
 			if (preg_match($this->pattern($COMMENT), $line, $match))
 			{
 				$line = str_replace(array_shift($match), '', $line);
-				$comment = array_shift($match);
-				if ($comment > '')
-				{
-					print("Comment: »" . $comment . "«\n");
-				}
 			}
 			$line = trim($line);
 			if (empty($line))
@@ -101,8 +78,8 @@ class StringReader implements Reader
 				array_shift($match);
 				$label = array_shift($match);
 				$values = preg_split($this->pattern($COMMA), array_shift($match));
+				$this->parameters[] = new Parameter($values, $label);
 
-				print("Parameter: »" . $label . "«. Values »" . implode('«, »', $values) . "«\n");
 				continue;
 			}
 			if (($stage == 0 || $stage == 1) && preg_match($this->pattern($SUBMODULE), $line, $match))
@@ -110,9 +87,12 @@ class StringReader implements Reader
 				array_shift($match);
 				$values = preg_split($this->pattern($COMMA), array_shift($match));
 				$order = array_shift($match);
-
-				print("Order: »" . $order . "«. Parameters »" . implode('«, »', $values) . "«\n");
+				$this->subModules[] = array(
+					'order' => $order,
+					'parameters' => $values
+				);
 				$stage = 1;
+
 				continue;
 			}
 			if (preg_match($this->pattern($CONDITION, 'i'), $line, $match))
@@ -121,14 +101,13 @@ class StringReader implements Reader
 				$condition = array_shift($match);
 				$then = array_shift($match);
 				$else = array_shift($match);
-
-				print("Constraint: IF »" . $condition . "« THEN »" . $then);
-				if (!empty($else))
-				{
-					print("« ELSE »" . $else);
-				}
-				print("«\n");
+				$this->constraints = array(
+					'if' => $condition,
+					'then' => $then,
+					'else' => $else
+				);
 				$stage = 2;
+
 				continue;
 			}
 			if (preg_match($this->pattern('IF\s+\[', 'i'), $line))
@@ -140,7 +119,6 @@ class StringReader implements Reader
 			}
 			print("\n\nUnknown syntax in line {$lineNo}: »{$line}«\n\n");
 		}
-		print("\n\n");
 	}
 
 	private function pattern($pattern, $modifier = '')
