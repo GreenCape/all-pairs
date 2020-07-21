@@ -25,7 +25,7 @@ made up from the two parameters have to be covered. An upper bound is given by a
 <caption>Number of generated test sets</caption>
 <tr><td></td><th>Lower Bound</th><th>Default</th><th>QICT</th><th>Upper Bound</th></tr>
 <tr><th>testData.txt</th><td>4*3 = 12</td><td>12</td><td>12</td><td>2*4*3*2 = 48</td></tr>
-<tr><th>hardware.txt</th><td>4*4 = 16</td><td>17</td><td>21</td><td>3*3*4*2*4*4 = 1,152</td></tr>
+<tr><th>hardware.txt</th><td>(4*4)*(4*3) = 192</td><td>208</td><td>208</td><td>3*3*4*2*4*4 = 1,152</td></tr>
 <tr><th>server.txt</th><td>5*5 = 25</td><td>25</td><td>25</td><td>2*5*4*5 = 200</td></tr>
 <tr><th>prime.txt</th><td>7*5 = 35</td><td>35</td><td>35</td><td>2*3*5*7 = 210</td></tr>
 <tr><th>volume.txt</th><td>8*7 = 56</td><td>60</td><td>60</td><td>7*7*2*3*8*2 = 4,704</td></tr>
@@ -37,11 +37,11 @@ made up from the two parameters have to be covered. An upper bound is given by a
 <table>
 <caption>Computing time in seconds</caption>
 <tr><td></td><th>Default</th><th>QICT</th></tr>
-<tr><th>testData.txt</th><td>0.0027</td><td>0,12</td></tr>
-<tr><th>hardware.txt</th><td>0.0094</td><td>0,21</td></tr>
+<tr><th>testData.txt</th><td>0.0027</td><td>0.12</td></tr>
+<tr><th>hardware.txt</th><td>0.0150</td><td>0.80</td></tr>
 <tr><th>server.txt</th><td>0.0068</td><td>0.04</td></tr>
 <tr><th>prime.txt</th><td>0.0072</td><td>0.14</td></tr>
-<tr><th>volume.txt</th><td>0.0284</td><td>0,78</td></tr>
+<tr><th>volume.txt</th><td>0.0284</td><td>0.78</td></tr>
 <tr><th>big.txt</th><td>10.0269</td><td>1675.16</td></tr>
 </table>
 

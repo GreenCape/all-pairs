@@ -27,12 +27,13 @@ class Combinator
 		$moduleParameters = array();
 		$moduleId         = array();
 
+		// Compute subsets
 		$subSets = array();
 		foreach ($subModules as $moduleIndex => $module)
 		{
 			$moduleLabel            = uniqid('Module');
 			$moduleId[$moduleLabel] = $moduleIndex;
-			$subParameters = array();
+			$subParameters          = array();
 			foreach ($parameters as $parameterIndex => $parameter)
 			{
 				if (in_array($parameter->getLabel(), $module['parameters']))
@@ -46,18 +47,68 @@ class Combinator
 			$subSets[$moduleIndex] = $subSet;
 			$parameters[]          = new Parameter(array_keys($subSet), $moduleLabel);
 		}
-		$testSets = array();
-		foreach ($this->strategy->combine(array_values($parameters), 2) as $set)
+
+		// Generate testsets
+		$testSets = $this->strategy->combine(array_values($parameters), 2);
+
+		if (!empty($moduleId))
 		{
-			$resolved = array();
-			foreach ($set as $label => $value)
+			// Resolve subsets
+			$resolvedSets = array();
+			foreach ($testSets as $set)
 			{
-				if (isset($moduleId[$label]))
+				$resolved = array();
+				foreach ($set as $label => $value)
 				{
-					$resolved += $subSets[$moduleId[$label]][$value];
+					if (isset($moduleId[$label]))
+					{
+						$resolved += $subSets[$moduleId[$label]][$value];
+					}
+				}
+				$resolvedSets[] = $resolved;
+			}
+			$testSets = $resolvedSets;
+		}
+
+		// Reduce
+		$labels = array_keys($testSets[0]);
+		print("Labels: " . print_r($labels, true));
+
+		for ($i = 1; $i < count($testSets); ++$i)
+		{
+			$remove = true;
+			$debug  = "Set $i: {" . implode(', ', $testSets[$i]) . "}:\n";;
+			for ($x = 0; $x < count($labels) - 1; ++$x)
+			{
+				for ($y = $x + 1; $y < count($labels); ++$y)
+				{
+					$found = false;
+					for ($j = 0; $j < $i; ++$j)
+					{
+						if (!isset($testSets[$j]))
+						{
+							continue;
+						}
+						if ($testSets[$i][$labels[$x]] == $testSets[$j][$labels[$x]] && $testSets[$i][$labels[$y]] == $testSets[$j][$labels[$y]])
+						{
+							$debug .= "{" . $testSets[$i][$labels[$x]] . ", " . $testSets[$i][$labels[$y]] . "} found in set $j\n";
+							$found = true;
+							break;
+						}
+					}
+					if (!$found)
+					{
+						$remove = false;
+						break 2;
+					}
 				}
 			}
-			$testSets[] = $resolved;
+			if ($remove)
+			{
+				// All pairs were found, remove testSet
+				print($debug);
+				unset($testSets[$i]);
+			}
 		}
 
 		return is_null($this->writer) ? $testSets : $this->writer->write($testSets);

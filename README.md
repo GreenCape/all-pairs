@@ -14,7 +14,7 @@ This project follows [semantic versioning](http://semver.org).
 
 ## Roadmap
 
-  - Sub-models
+  - <s>Sub-models</s>
   - Conditional constraints
   - Unconditional constraints
   - Command line tool
