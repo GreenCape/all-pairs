@@ -2,18 +2,22 @@
 
 namespace GreenCape\AllPairs;
 
+use GreenCape\AllPairs\Reader\ReaderInterface;
+use GreenCape\AllPairs\Strategy\StrategyInterface;
+use GreenCape\AllPairs\Writer\WriterInterface;
+
 class Combinator
 {
-    /** @var Reader */
+    /** @var ReaderInterface */
     private $reader;
 
-    /** @var Writer */
+    /** @var WriterInterface */
     private $writer;
 
-    /** @var Strategy */
+    /** @var StrategyInterface */
     private $strategy;
 
-    public function __construct(Strategy $strategy, Reader $reader, Writer $writer = null)
+    public function __construct(StrategyInterface $strategy, ReaderInterface $reader, WriterInterface $writer = null)
     {
         $this->strategy = $strategy;
         $this->reader   = $reader;

@@ -1,8 +1,10 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Reader;
 
-interface Reader
+use GreenCape\AllPairs\Parameter;
+
+interface ReaderInterface
 {
     /**
      * @param  string  $labelDelimiter

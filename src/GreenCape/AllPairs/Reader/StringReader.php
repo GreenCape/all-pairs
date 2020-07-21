@@ -1,10 +1,11 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Reader;
 
+use GreenCape\AllPairs\Parameter;
 use RuntimeException;
 
-class StringReader implements Reader
+class StringReader implements ReaderInterface
 {
     private $parameters  = array();
     private $subModules  = array();

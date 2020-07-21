@@ -1,8 +1,8 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Writer;
 
-class VardumpWriter implements Writer
+class VardumpWriter implements WriterInterface
 {
     public function write($result)
     {

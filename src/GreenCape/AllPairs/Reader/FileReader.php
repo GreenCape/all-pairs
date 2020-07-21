@@ -1,6 +1,6 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Reader;
 
 class FileReader extends StringReader
 {

@@ -1,7 +1,6 @@
 <?php
 
-require_once __DIR__ . '/autoload.php';
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $base  = '..';
 $files = array(
@@ -17,9 +16,9 @@ $files = array(
 foreach ($files as $file) {
     print("\nBegin pair-wise test set generation for {$file}\n\n");
     $time     = microtime(true);
-    $allPairs = new GreenCape\AllPairs\Combinator(new GreenCape\AllPairs\DefaultStrategy(),
-        new GreenCape\AllPairs\FileReader($base . $file),
-        new GreenCape\AllPairs\ConsoleWriter());
+    $allPairs = new GreenCape\AllPairs\Combinator(new GreenCape\AllPairs\Strategy\DefaultStrategy(),
+        new GreenCape\AllPairs\Reader\FileReader($base . $file),
+        new GreenCape\AllPairs\Writer\ConsoleWriter());
     $result   = $allPairs->combine();
     $time     = microtime(true) - $time;
 

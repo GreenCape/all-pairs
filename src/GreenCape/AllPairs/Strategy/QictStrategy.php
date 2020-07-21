@@ -1,8 +1,10 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Strategy;
 
-class QictStrategy implements Strategy
+use GreenCape\AllPairs\Parameter;
+
+class QictStrategy implements StrategyInterface
 {
     /**
      * @param  Parameter[]  $parameterDefinition

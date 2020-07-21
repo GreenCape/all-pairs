@@ -1,8 +1,8 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Writer;
 
-class ConsoleWriter implements Writer
+class ConsoleWriter implements WriterInterface
 {
     protected $fieldSeparator = "\t";
     protected $lineSeparator  = "\n";

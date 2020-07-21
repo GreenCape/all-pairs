@@ -1,8 +1,10 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Strategy;
 
-interface Strategy
+use GreenCape\AllPairs\Parameter;
+
+interface StrategyInterface
 {
     /**
      * @param  Parameter[]  $parameterList

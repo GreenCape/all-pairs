@@ -1,0 +1,17 @@
+{
+  "name": "greencape/all-pairs",
+  "description": "GreenCape AllPairs supports different strategies for the generation of test sets.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Niels Braczek",
+      "email": "nbraczek@bsds.de"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "GreenCape\\AllPairs\\": "src/GreenCape/AllPairs"
+    }
+  }
+}

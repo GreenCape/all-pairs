@@ -1,8 +1,10 @@
 <?php
 
-namespace GreenCape\AllPairs;
+namespace GreenCape\AllPairs\Strategy;
 
-class DefaultStrategy implements Strategy
+use GreenCape\AllPairs\Parameter;
+
+class DefaultStrategy implements StrategyInterface
 {
     private $ordering;
     private $tokenizedParameterList = array();
