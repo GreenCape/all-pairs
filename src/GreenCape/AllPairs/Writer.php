@@ -4,5 +4,5 @@ namespace GreenCape\AllPairs;
 
 interface Writer
 {
-	public function write($result);
+    public function write($result);
 }

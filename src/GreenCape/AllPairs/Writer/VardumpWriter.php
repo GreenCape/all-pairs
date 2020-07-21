@@ -2,12 +2,13 @@
 
 namespace GreenCape\AllPairs;
 
-class VardumpWriter implements  Writer
+class VardumpWriter implements Writer
 {
-	public function write($result)
-	{
-		print_r($result);
+    public function write($result)
+    {
+        /** @noinspection ForgottenDebugOutputInspection */
+        print_r($result);
 
-		return $result;
-	}
+        return $result;
+    }
 }

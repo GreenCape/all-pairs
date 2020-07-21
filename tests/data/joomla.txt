@@ -1,0 +1,5 @@
+Joomla: latest, staging
+Webserver: Apache, Nginx
+Database: MySQL, PostgreSQL, SQLite
+PHP: 5.6, 7.0, 7.1
+
