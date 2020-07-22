@@ -73,7 +73,6 @@ class Combinator
 
         // Reduce
         $labels = array_keys($testSets[0]);
-        print("Labels: " . print_r($labels, true));
 
         for ($i = 1, $iMax = count($testSets); $i < $iMax; ++$i) {
             $remove = true;
